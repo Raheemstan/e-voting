@@ -2,13 +2,13 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Condidate as ModelsCondidate;
+use App\Models\Candidate as ModelsCandidate;
 use App\Models\Position;
 use Illuminate\Support\Facades\File;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class Condidate extends Component
+class Candidate extends Component
 {
     public $showTable = true;
     public $showCreate = false;
@@ -21,7 +21,7 @@ class Condidate extends Component
     public $pos_id;
     public $positions;
 
-    public $condidate_id;
+    public $candidate_id;
     public $edit_fname;
     public $edit_lname;
     public $edit_email;
@@ -32,14 +32,14 @@ class Condidate extends Component
     public $search;
     public function render()
     {
-        $this->total = ModelsCondidate::count();
+        $this->total = ModelsCandidate::count();
         if ($this->search != "") {
-            $condidates = ModelsCondidate::orderBy('id', 'DESC')->where('email', 'LIKE', '%' . $this->search . '%')->get();
-            return view('livewire.admin.condidate', compact('condidates'))->layout('layout.admin-app');
+            $candidates = ModelsCandidate::orderBy('id', 'DESC')->where('email', 'LIKE', '%' . $this->search . '%')->get();
+            return view('livewire.admin.candidate', compact('candidates'))->layout('layout.admin-app');
         }
         $this->positions = Position::all();
-        $condidates = ModelsCondidate::orderBy('id', 'DESC')->get();
-        return view('livewire.admin.condidate', compact('condidates'))->layout('layout.admin-app');
+        $candidates = ModelsCandidate::orderBy('id', 'DESC')->get();
+        return view('livewire.admin.condidate', compact('candidates'))->layout('layout.admin-app');
     }
 
     public function goBack()
@@ -62,7 +62,7 @@ class Condidate extends Component
         $this->image = "";
         $this->pos_id = "";
 
-        $this->condidate_id = "";
+        $this->candidate_id = "";
         $this->edit_fname = "";
         $this->edit_lname = "";
         $this->edit_email = "";
@@ -74,7 +74,7 @@ class Condidate extends Component
     use WithFileUploads;
     public function store()
     {
-        $condidates = new ModelsCondidate();
+        $candidates = new ModelsCandidate();
         $this->validate([
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
@@ -84,23 +84,23 @@ class Condidate extends Component
         ]);
         $filename = "";
         if ($this->image != "") {
-            $filename = $this->image->store('condidate', 'public');
+            $filename = $this->image->store('candidate', 'public');
         } else {
             $filename = "null";
         }
-        $condidates->fname = $this->fname;
-        $condidates->lname = $this->lname;
-        $condidates->email = $this->email;
-        $condidates->pos_id = $this->pos_id;
-        $condidates->image = $filename;
-        $condidates->points = 1;
-        $result = $condidates->save();
+        $candidates->fname = $this->fname;
+        $candidates->lname = $this->lname;
+        $candidates->email = $this->email;
+        $candidates->pos_id = $this->pos_id;
+        $candidates->image = $filename;
+        $candidates->points = 1;
+        $result = $candidates->save();
         if ($result) {
-            session()->flash('success', "Condidates Add Successfully");
+            session()->flash('success', "Candidates Add Successfully");
             $this->resetField();
             $this->goBack();
         } else {
-            session()->flash('error', "Condidates Not Add Successfully");
+            session()->flash('error', "Candidates Not Add Successfully");
         }
     }
 
@@ -108,18 +108,18 @@ class Condidate extends Component
     {
         $this->showTable = false;
         $this->showUpdate = true;
-        $condidates = ModelsCondidate::findOrFail($id);
-        $this->condidate_id = $condidates->id;
-        $this->edit_fname = $condidates->fname;
-        $this->edit_lname = $condidates->lname;
-        $this->edit_email = $condidates->email;
-        $this->old_image = $condidates->image;
-        $this->edit_pos_id = $condidates->pos_id;
+        $candidates = ModelsCandidate::findOrFail($id);
+        $this->candidate_id = $candidates->id;
+        $this->edit_fname = $candidates->fname;
+        $this->edit_lname = $candidates->lname;
+        $this->edit_email = $candidates->email;
+        $this->old_image = $candidates->image;
+        $this->edit_pos_id = $candidates->pos_id;
     }
 
     public function update($id)
     {
-        $condidates = ModelsCondidate::findOrFail($id);
+        $candidates = ModelsCandidate::findOrFail($id);
         $this->validate([
             'edit_fname' => ['required', 'string'],
             'edit_lname' => ['required', 'string'],
@@ -127,43 +127,43 @@ class Condidate extends Component
             'edit_pos_id' => ['required', 'string'],
         ]);
         $filename = "";
-        $destination = public_path("storage\\" . $condidates->image);
+        $destination = public_path("storage\\" . $candidates->image);
 
         if ($this->new_image != "") {
             if (File::exists($destination)) {
                 File::delete($destination);
             }
-            $filename = $this->new_image->store('condidate', 'public');
+            $filename = $this->new_image->store('candidate', 'public');
         } else {
             $filename = $this->old_image;
         }
-        $condidates->fname = $this->edit_fname;
-        $condidates->lname = $this->edit_lname;
-        $condidates->email = $this->edit_email;
-        $condidates->pos_id = $this->edit_pos_id;
-        $condidates->image = $filename;
-        $result = $condidates->save();
+        $candidates->fname = $this->edit_fname;
+        $candidates->lname = $this->edit_lname;
+        $candidates->email = $this->edit_email;
+        $candidates->pos_id = $this->edit_pos_id;
+        $candidates->image = $filename;
+        $result = $candidates->save();
         if ($result) {
-            session()->flash('success', "Condidates Update Successfully");
+            session()->flash('success', "Candidates Update Successfully");
             $this->resetField();
             $this->goBack();
         } else {
-            session()->flash('error', "Condidates Not Update Successfully");
+            session()->flash('error', "Candidates Not Update Successfully");
         }
     }
 
     public function delete($id)
     {
-        $condidates = ModelsCondidate::findOrFail($id);
-        $destination = public_path("storage\\" . $condidates->image);
+        $candidates = ModelsCandidate::findOrFail($id);
+        $destination = public_path("storage\\" . $candidates->image);
         if (File::exists($destination)) {
             File::delete($destination);
         }
-        $result = $condidates->delete();
+        $result = $candidates->delete();
         if ($result) {
-            session()->flash('success', "Condidates Delete Successfully");
+            session()->flash('success', "Candidates Delete Successfully");
         } else {
-            session()->flash('error', "Condidates Not Delete Successfully");
+            session()->flash('error', "Candidates Not Delete Successfully");
         }
     }
 }

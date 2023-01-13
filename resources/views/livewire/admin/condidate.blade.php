@@ -6,9 +6,11 @@
             <div class="card my-3">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h4>{{ __('Condidates ') }}({{ $total }})</h4>
+                        <h4>{{ __('Candidates ') }}({{ $total }})</h4>
                         <button wire:click='showForm' class="btn btn-primary">New</button>
                     </div>
+                    <a href="{{ route('result') }}"><button type="button" class="btn btn-primary">Print Result</button></a>
+
                 </div>
             </div>
             @if ($showTable == true)
@@ -27,11 +29,10 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Fname</th>
-                                <th>Lname</th>
+                                <th>Fullname</th>
+                                <th>Call Sign</th>
                                 <th>Email</th>
-                                <th>Points</th>
+                                <th>Votes</th>
                                 <th>Position</th>
                                 <th>Image</th>
                                 <th>Edit</th>
@@ -39,19 +40,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (count($condidates) > 0)
-                                @foreach ($condidates as $condidate)
+                            @if (count($candidates) > 0)
+                                @foreach ($candidates as $candidate)
                                     <tr>
-                                        <td>{{ $condidate->id }}</td>
-                                        <td>{{ $condidate->fname }}</td>
-                                        <td>{{ $condidate->lname }}</td>
-                                        <td>{{ $condidate->email }}</td>
-                                        <td>{{ $condidate->points }}</td>
-                                        <td>{{ $condidate->positions->positions }}</td>
-                                        <td><img src="{{ asset('storage') }}/{{ $condidate->image }}"
+                                        <td>{{ $candidate->fname }}</td>
+                                        <td>{{ $candidate->lname }}</td>
+                                        <td>{{ $candidate->email }}</td>
+                                        <td>{{ $candidate->points }}</td>
+                                        <td>{{ $candidate->positions->positions }}</td>
+                                        <td><img src="{{ asset('storage') }}/{{ $candidate->image }}"
                                                 style="width:70px;height:70px;" alt=""></td>
-                                        <td><button wire:click="edit({{ $condidate->id }})" class="btn btn-success">Edit</button></td>
-                                        <td><button class="btn btn-danger" wire:click.prevent='delete({{ $condidate->id }})'>Delete</button></td>
+                                        <td><button wire:click="edit({{ $candidate->id }})" class="btn btn-success">Edit</button></td>
+                                        <td><button class="btn btn-danger" wire:click.prevent='delete({{ $candidate->id }})'>Delete</button></td>
                                     </tr>
                                 @endforeach
                             @else
@@ -68,18 +68,18 @@
 
                     <form wire:submit.prevent='store'>
                         <div class="mb-3">
-                            <label for="pwd" class="form-label">First Name:</label>
+                            <label for="pwd" class="form-label">Fullname:</label>
                             <input type="text" wire:model.lazy="fname" class="form-control"
-                                placeholder="Enter First Name">
+                                placeholder="Enter Fullname">
                             @error('fname')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
 
                         </div>
                         <div class="mb-3">
-                            <label for="pwd" class="form-label">Last Name:</label>
+                            <label for="pwd" class="form-label">Call Sign:</label>
                             <input type="text" wire:model.lazy="lname" class="form-control"
-                                placeholder="Enter Last Name">
+                                placeholder="Enter Call Sign">
                             @error('lname')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -124,20 +124,20 @@
                 <div class="my-2">
                     <button class="btn btn-secondary my-2" wire:click='goBack'>Go Back</button>
 
-                    <form wire:submit.prevent='update({{ $condidate_id }})'>
+                    <form wire:submit.prevent='update({{ $candidate_id }})'>
                         <div class="mb-3">
-                            <label for="pwd" class="form-label">First Name:</label>
+                            <label for="pwd" class="form-label">Fullname:</label>
                             <input type="text" wire:model.lazy="edit_fname" class="form-control"
-                                placeholder="Enter First Name">
+                                placeholder="Enter Fullname">
                             @error('edit_fname')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
 
                         </div>
                         <div class="mb-3">
-                            <label for="pwd" class="form-label">Last Name:</label>
+                            <label for="pwd" class="form-label">Call Sign:</label>
                             <input type="text" wire:model.lazy="edit_lname" class="form-control"
-                                placeholder="Enter Last Name">
+                                placeholder="Enter Call Sign">
                             @error('edit_lname')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -157,7 +157,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="pwd" class="form-label">Email:</label>
-                            <input type="text" wire:model.lazy="edit_email" class="form-control" placeholder="Enter Email">
+                            <input type="email" wire:model.lazy="edit_email" class="form-control" placeholder="Enter Email">
                             @error('edit_email')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

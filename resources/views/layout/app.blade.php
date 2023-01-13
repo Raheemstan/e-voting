@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Voting {{ $title }}</title>
+    <title>NACOS Voting {{ $title }}</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     @livewireStyles
@@ -13,7 +13,7 @@
 </head>
 <style>
     .bg-image {
-        background: rgba(0, 0, 0, 0.5) url('https://images.unsplash.com/photo-1616891722586-e572f3ea8acb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGVsZWN0aW9ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=400&q=60');
+        background: rgba(0, 0, 0, 0.5) url("{{ asset('images/bg.jpg') }}");
         background-blend-mode: darken;
         background-repeat: no-repeat;
         background-size: cover;
@@ -42,23 +42,20 @@
         </div>
     </nav>
     <!-- hero section -->
-    <div class="container-fluid bg-image" style="">
+    <div class="container-fluid bg-image">
         <div class="container">
             <div class="d-flex justify-content-center align-items-center flex-col" style="height:30vh;">
                 <h1 class="text-white">{{ $image_title }}</h1> <br>
-            </div>
+            <!-- </div>
             @auth
                 <h4>Total Votes : {{ Auth::user()->vote_limit }}</h4>
 
-            @endauth
+            @endauth -->
 
         </div>
     </div>
 
     {{ $slot }}
-    <footer class="bg-dark text-center p-5">
-        <h4 class="text-white">Simple voting system in laravel powered by hilal ahmad</h4>
-    </footer>
     <!-- Latest compiled JavaScript -->
     <script src=" {{ asset('js/bootstrap.min.css') }}">
     </script>

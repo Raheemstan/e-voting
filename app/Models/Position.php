@@ -15,8 +15,8 @@ class Position extends Model
 
 
 
-    public function condidates()
+    public function candidates()
     {
-        return $this->hasMany(Condidate::class);
+        return $this->hasMany(Candidate::class);
     }
 }

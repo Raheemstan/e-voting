@@ -27,7 +27,6 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Position</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
@@ -37,7 +36,6 @@
                             @if (count($positiones) > 0)
                                 @foreach ($positiones as $position)
                                     <tr>
-                                        <td>{{ $position->id }}</td>
                                         <td>{{ $position->positions }}</td>
                                         <td><button wire:click="edit({{ $position->id }})" class="btn btn-success">Edit</button></td>
                                         <td><button class="btn btn-danger" wire:click.prevent='delete({{ $position->id }})'>Delete</button></td>

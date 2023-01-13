@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('vote_limit')->default(1);
             $table->boolean('voted')->default(false);
             $table->string('password');
-            $table->string('image');
             $table->rememberToken();
             $table->timestamps();
         });

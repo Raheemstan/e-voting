@@ -14,25 +14,25 @@ class Voter extends Component
     public $showTable = true;
     public $showCreate = false;
     public $showUpdate = false;
+    public $groupUpload = false;
     public $total;
 
     public $name;
     public $email;
     public $password;
-    public $image;
 
     public $search;
 
     public $voter_id;
     public $edit_name;
     public $edit_email;
-    public $old_image;
-    public $new_image;
 
     public function render()
     {
         if ($this->search != "") {
-            $voters = User::orderBy('id', 'DESC')->where('name', 'LIKE', '%' . $this->search . '%')->get();
+            $voters = User::orderBy('id', 'DESC')
+            ->where('vote_id', 'LIKE', '%' . $this->search . '%')
+            ->get();
             return view('livewire.admin.voter', compact('voters'))->layout('layout.admin-app');
         }
         $this->total = User::count();
@@ -45,10 +45,14 @@ class Voter extends Component
         $this->showTable = true;
         $this->showCreate = false;
         $this->showUpdate = false;
+        $this->groupUpload = false;
     }
+
+
     public function showForm()
     {
         $this->showTable = false;
+        $this->groupUpload = false;
         $this->showCreate = true;
     }
     use WithFileUploads;
@@ -58,12 +62,9 @@ class Voter extends Component
         $this->name = "";
         $this->email = "";
         $this->password = "";
-        $this->image = "";
         $this->voter_id = "";
         $this->edit_name = "";
         $this->edit_email = "";
-        $this->old_image = "";
-        $this->new_image = "";
     }
 
     // genereta random id;
@@ -81,26 +82,57 @@ class Voter extends Component
         return $str;
     }
 
+    public function groupUpload()
+    {
+        
+        $this->showTable = false;
+        $this->showCreate = false;
+        $this->showUpdate = false;
+        $this->groupUpload = true;
+        
+    }    
+
+    public function uploadFile()
+    {
+        $voters = new User();
+        $this->validate([
+            'image' => ['required']
+        ]);
+        $filename = "";
+        if ($this->image != "") {
+            $filename = $this->image->store('csv', 'public');
+        } else {
+            $filename = "null";
+        }
+
+        $voters->name = $this->name;
+        $voters->lname = $this->lname;
+        $voters->email = $this->email;
+        $voters->pos_id = $this->pos_id;
+        $voters->image = $filename;
+        $voters->points = 1;
+        $result = $voters->save();
+        if ($result) {
+            session()->flash('success', "Voter Add Successfully");
+            $this->resetField();
+            $this->goBack();
+        } else {
+            session()->flash('error', "Voters Not Add Successfully");
+        }
+    }
+
     public function create()
     {
         $users = new User();
         $this->validate([
-            'name' => ['required', 'string'],
+            'name' => ['string'],
             'email' => ['required', 'string', 'email', 'unique:users'],
             'password' => ['required'],
-            'image' => ['required']
         ]);
-        $filename = "";
-        if ($this->image) {
-            $filename = $this->image->store('users', 'public');
-        } else {
-            $filename = "null";
-        }
         $users->name = $this->name;
         $users->email = $this->email;
         $users->password = Hash::make($this->password);
-        $users->vote_id = $this->generete(20);
-        $users->image = $filename;
+        $users->vote_id = $this->password;
         $result = $users->save();
         if ($result) {
             session()->flash('success', 'Voter Add Successfully');
@@ -112,35 +144,24 @@ class Voter extends Component
     public function edit($id)
     {
         $this->showTable = false;
+        $this->groupUpload = false;
         $this->showUpdate = true;
         $voters = User::findOrFail($id);
         $this->voter_id = $voters->id;
         $this->edit_name = $voters->name;
         $this->edit_email = $voters->email;
-        $this->old_image = $voters->image;
     }
 
     public function update($id)
     {
         $voters = User::findOrFail($id);
         $this->validate([
-            'edit_name' => ['required', 'string'],
+            'edit_name' => ['string'],
             'edit_email' => ['required', 'string', 'email'],
         ]);
-        $filename = "";
-        $destination = public_path("storage\\" . $voters->image);
 
-        if ($this->new_image) {
-            if (File::exists($destination)) {
-                File::delete($destination);
-            }
-            $filename = $this->new_image->store('users', 'public');
-        } else {
-            $filename = $this->old_image;
-        }
         $voters->name = $this->edit_name;
         $voters->email = $this->edit_email;
-        $voters->image = $filename;
         $result = $voters->save();
         if ($result) {
             session()->flash('success', 'Voter Update Successfully');
@@ -150,12 +171,8 @@ class Voter extends Component
     }
     public function delete($id)
     {
-        $condidates = User::findOrFail($id);
-        $destination = public_path("storage\\" . $condidates->image);
-        if (File::exists($destination)) {
-            File::delete($destination);
-        }
-        $result = $condidates->delete();
+        $candidates = User::findOrFail($id);
+        $result = $candidates->delete();
         if ($result) {
             session()->flash('success', "Voter Delete Successfully");
         } else {
