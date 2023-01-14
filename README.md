@@ -9,6 +9,10 @@ composer install
 ```
 
 ```bash
+php artisan storage:link
+```
+
+```bash
 php artisan migrate:fresh --seed
 ```
 
